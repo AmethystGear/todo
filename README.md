@@ -12,15 +12,18 @@ Unlike complicated todo managers, todo.c keeps things very simple. It only has 4
 
 ```clear``` -- remove everything from the list
 
+the general pattern is:
+```{path to todo executable} {path to todo file} {command}```
+
 ## using todo
 Since todo.c is just a C program, all you need to do is compile it to turn it into an executable on whatever platform you use. 
 
 ## todo anywhere!
-what if you want to run todo.c without typing in the full path to the program location?
+what if you want to run todo.c without typing in the full path to the program location, and the full path to the todo file?
 
 #### linux
 using your favorite text editor, add this line to ```~/.bash_aliases```: 
-```alias todo='{path to todo executable}'```
+```alias todo='{absolute path to todo executable} {absolute path to todo file}'```
 
 then run ```source ~/.bash_aliases``` in the terminal.
 Now you can run ```todo {X}``` from anywhere!
