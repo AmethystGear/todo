@@ -23,7 +23,6 @@ what if you want to run todo.c without typing in the full path to the program lo
 
 #### linux
 using your favorite text editor, add this line to ```~/.bash_aliases```: 
-
 ```alias todo='{absolute path to todo executable} {absolute path to todo file}'```
 
 then run ```source ~/.bash_aliases``` in the terminal.
