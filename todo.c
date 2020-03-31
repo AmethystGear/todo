@@ -35,28 +35,23 @@ void delete_line(int lineNumToDel, char *fileName) {
 bool contains_line(char *lineCmp, char *fileName) {
     FILE *fp = fopen(fileName, "r");
     int c;
-    int size = 0;
-    int capacity = 10;
-    char *line = malloc(capacity * sizeof(char));
+    int cmpLen = strlen(lineCmp);
+    int col = 0;
     while ((c = getc(fp)) != EOF) {
         if(c == '\n') {
-            if(strcmp(line, lineCmp) == 0) {
+            if (col != -1) {
                 return true;
             }
-            free(line);
-            size = 0;
-            capacity = 10;
-            line = malloc(capacity * sizeof(char));
+
+            col = 0;
         } else {
-            line[size] = c;
-            size++;
-            if(size >= capacity) {
-                capacity = capacity * 2;
-                line = realloc(line, capacity);
+            if (col != -1 && col < cmpLen && lineCmp[col] == c) {
+                col++;
+            } else {
+                col = -1;
             }
         }
     }
-    free(line);
     return false;
 }
 
@@ -113,8 +108,7 @@ int main(int argc, char *argv[]) {
         while ((c = getc(fp)) != EOF) {
             if(c == '\n') {
                 if(match && size >= len) {
-                    printf("%s", line);
-                    printf("\n");
+                    printf("%s\n", line);
                     matchLineNum = lineNum;
                     numMatches++;
                 }
