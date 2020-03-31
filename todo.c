@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#define TODO_FILENAME "TODO"
 
 #define ADD_COMMAND "add"
 #define REMOVE_COMMAND "finish"
@@ -68,33 +67,34 @@ int num_lines_in_file(char *fileName) {
 }
 
 int main(int argc, char *argv[]) {
+    char *TODO_FILENAME = argv[1];
     if(access(TODO_FILENAME, F_OK) == -1) {
         fclose(fopen(TODO_FILENAME,"w"));
     }
 
-    if(argc == 1 || argc > 3) {
+    if(argc == 2 || argc > 4) {
         printf("incorrect number of args\n");
         exit(1);
     }
 
-    if(strcmp(argv[1], ADD_COMMAND) == 0) {
-        if(argc != 3) {
+    if(strcmp(argv[2], ADD_COMMAND) == 0) {
+        if(argc != 4) {
             printf("incorrect number of args\n");
             exit(1);
         }
-        if(contains_line(argv[2], TODO_FILENAME)) {
+        if(contains_line(argv[3], TODO_FILENAME)) {
             printf("that task is already listed!\n");
             exit(1);
         }
         FILE *fp = fopen(TODO_FILENAME, "a");
-        fprintf(fp, "%s\n", argv[2]);
+        fprintf(fp, "%s\n", argv[3]);
         fclose(fp);
-    } else if (strcmp(argv[1], REMOVE_COMMAND) == 0) {
-        if(argc != 3) {
+    } else if (strcmp(argv[2], REMOVE_COMMAND) == 0) {
+        if(argc != 4) {
             printf("incorrect number of args");
         }
 
-        int len = strlen(argv[2]);
+        int len = strlen(argv[3]);
 
         FILE *fp = fopen(TODO_FILENAME, "r");
         int c;
@@ -141,7 +141,6 @@ int main(int argc, char *argv[]) {
             }
         }
         fclose(fp);
-
         for(int i = 0; i < numMatches; i++) {
             printf("%s\n", matchLines[i]);
             free(matchLines[i]);
@@ -158,8 +157,8 @@ int main(int argc, char *argv[]) {
             printf("there were multiple matches, be more specific!\n");
             exit(1);
         }
-    } else if (strcmp(argv[1], LIST_COMMAND) == 0) {
-        if(argc != 2) {
+    } else if (strcmp(argv[2], LIST_COMMAND) == 0) {
+        if(argc != 3) {
             printf("incorrect number of args");
             exit(1);
         }
@@ -179,8 +178,8 @@ int main(int argc, char *argv[]) {
         fclose(fp);
         return 0; 
     } 
-    else if (strcmp(argv[1], REMOVE_ALL_COMMAND) == 0) {
-        if(argc != 2) {
+    else if (strcmp(argv[2], REMOVE_ALL_COMMAND) == 0) {
+        if(argc != 3) {
             printf("incorrect number of args");
             exit(1);
         }
