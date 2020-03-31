@@ -164,9 +164,17 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
         FILE *fp = fopen(TODO_FILENAME, "r");
-        int c;
-        while ((c = getc(fp)) != EOF) {
+        int lineNum = 1;
+        printf("1. ");
+        int c = getc(fp);
+        while (c != EOF) {
             putchar(c);
+            int tmp = getc(fp);
+            if(c == '\n' && tmp != EOF) {                
+                lineNum++;       
+                printf("%d. ", lineNum);
+            }
+            c = tmp;
         }
         fclose(fp);
         return 0; 
