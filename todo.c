@@ -42,7 +42,6 @@ bool contains_line(char *lineCmp, char *fileName) {
             if (col != -1) {
                 return true;
             }
-
             col = 0;
         } else {
             if (col != -1 && col < cmpLen && lineCmp[col] == c) {
@@ -55,15 +54,17 @@ bool contains_line(char *lineCmp, char *fileName) {
     return false;
 }
 
-int num_bytes_in_file(char *fileName) {
+int num_lines_in_file(char *fileName) {
     FILE *fp = fopen(fileName, "r");
     int c = 0;
-    int numBytes = 0;
+    int numLines = 0;
     while ((c = getc(fp)) != EOF) {
-        numBytes++;
+        if(c == '\n') {
+            numLines++;
+        }
     }
     fclose(fp);
-    return numBytes;
+    return numLines;
 }
 
 int main(int argc, char *argv[]) {
@@ -105,14 +106,23 @@ int main(int argc, char *argv[]) {
         int matchLineNum = 0;
         int numMatches = 0;
         bool match = true;
+        char **matchLines = malloc(num_lines_in_file(TODO_FILENAME) * sizeof(char*));
         while ((c = getc(fp)) != EOF) {
             if(c == '\n') {
                 if(match && size >= len) {
-                    printf("%s\n", line);
                     matchLineNum = lineNum;
-                    numMatches++;
+                    if(size == len) { // exact match
+                        for(int i = 0; i < numMatches; i++) {
+                            free(matchLines[i]);
+                        }
+                        matchLines[0] = line;
+                        numMatches = 1;
+                        break;
+                    } else {   
+                        matchLines[numMatches] = line;                     
+                        numMatches++;
+                    }
                 }
-                free(line);
                 size = 0;
                 capacity = 10;
                 line = malloc(capacity * sizeof(char));
@@ -130,8 +140,13 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
-        free(line);
         fclose(fp);
+
+        for(int i = 0; i < numMatches; i++) {
+            printf("%s\n", matchLines[i]);
+            free(matchLines[i]);
+        }
+        free(matchLines);
 
         if(numMatches == 0) {
             printf("there were no matches for your task!\n");
