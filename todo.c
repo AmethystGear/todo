@@ -190,7 +190,7 @@ bool parse_date(char *str, struct Date *date) {
             memcpy(yearBuff, &str[secondSlash + 1], len - secondSlash - 1);
             yearBuff[4] = '\0';
         } else {
-            if(len - firstSlash > 2) {
+            if(len - firstSlash - 1 > 2) {
                 printf("E");
                 return false;
             }
