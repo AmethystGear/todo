@@ -117,8 +117,6 @@ bool get_date(char *date, int *month, int *day) {
 
         int possibleMonth = atoi(monthBuff);
         int possibleDay = atoi(dayBuff);
-        printf("month: %d\n", possibleMonth);
-        printf("day: %d\n", possibleDay);
         if(possibleDay > 31 || possibleDay < 1) {
             return false;
         }
