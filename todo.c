@@ -98,7 +98,7 @@ int num_lines_in_file(char *fileName) {
     return numLines;
 }
 
-bool get_date(char *date, int *month, int *day) {
+bool parse_date(char *date, int *month, int *day) {
     int len = strlen(date);
     int slash = -1;
     for(int i = 0; i < len; i++) {
@@ -129,8 +129,6 @@ bool get_date(char *date, int *month, int *day) {
     }
 }
 
-
-
 bool is_leap_year(int year) {
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
 }
@@ -146,7 +144,6 @@ int days_in_month(int month, int year) {
         return 30;
     }
 }
-
 
 int days_till_date(int month, int day) {
     time_t s = time(NULL);
@@ -224,7 +221,7 @@ int main(int argc, char *argv[]) {
             } else {
                 int month = -1;
                 int day = -1;
-                if(!get_date(argv[4], &month, &day)) {
+                if(!parse_date(argv[4], &month, &day)) {
                     printf("you didn't enter the date properly! You should enter it as {month}/{day}.\n");
                     exit(1);
                 }
@@ -243,7 +240,7 @@ int main(int argc, char *argv[]) {
                         date[index] = '\0';
                         int lineMonth;
                         int lineDay;
-                        if(strlen(date) != 0 && !get_date(date, &lineMonth, &lineDay)){
+                        if(strlen(date) != 0 && !parse_date(date, &lineMonth, &lineDay)){
                             printf("the provided file is in the wrong format!");
                             exit(1);
                         } else if (strlen(date) == 0 || days_till_date(lineMonth, lineDay) > days_till_date(month, day)) {
