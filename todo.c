@@ -108,10 +108,6 @@ bool is_leap_year(int year) {
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
 }
 
-int days_in_year(int year) {
-    return is_leap_year(year) ? 366 : 355;
-}
-
 int days_in_month(int month, int year) {
     if(month == 2 && is_leap_year(year)) {
         return 29;
@@ -249,7 +245,7 @@ int days_between_dates(struct Date *start, struct Date *finish) {
             totalDays += days_in_month(i, start->year);
         }
         for(int i = start->year + 1; i < finish->year; i++) {
-            totalDays += days_in_year(i);
+            totalDays += is_leap_year(i) ? 366 : 365;
         }
         for(int i = 1; i < finish->month; i++) {
             totalDays += days_in_month(i, finish->year);
