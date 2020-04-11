@@ -455,12 +455,15 @@ int main(int argc, char *argv[]) {
             printf("1. ");
         }
         int c = getc(fp);
-        while (c != EOF) {
-            putchar(c);
+        while (c != EOF) {            
             int tmp = getc(fp);
             if(c == '\n' && tmp != EOF) {                
                 lineNum++;       
-                printf("%d. ", lineNum);
+                printf("\n%d. ", lineNum);
+            } else if(c == '\t' && tmp != '\n') {
+                printf(": ");
+            } else {
+                putchar(c);
             }
             c = tmp;
         }
