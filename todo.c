@@ -32,6 +32,7 @@ void delete_line(int lineNumToDel, char *fileName) {
     rename("temp", fileName);    
 }
 
+// append the provided task with the provided date at the provided index of the provided file.
 void insert_task(int index, char *task, char* date, char *fileName) {
     FILE *fp = fopen(fileName, "r");
     FILE *tmp = fopen("temp", "w");
@@ -59,10 +60,12 @@ void insert_task(int index, char *task, char* date, char *fileName) {
     rename("temp", fileName);   
 }
 
-bool contains_task(char *lineCmp, char *fileName) {
+// searches for provided task in file. returns true if it exists.
+// returns false otherwise.
+bool contains_task(char *task, char *fileName) {
     FILE *fp = fopen(fileName, "r");
     int c;
-    int cmpLen = strlen(lineCmp);
+    int cmpLen = strlen(task);
     int col = 0;
     bool pastTab = false;
     while ((c = getc(fp)) != EOF) {
@@ -72,7 +75,7 @@ bool contains_task(char *lineCmp, char *fileName) {
             }
             pastTab = true;
         } else if (!pastTab) {
-            if (col != -1 && col < cmpLen && lineCmp[col] == c) {
+            if (col != -1 && col < cmpLen && task[col] == c) {
                 col++;
             } else {
                 col = -1;
@@ -85,6 +88,7 @@ bool contains_task(char *lineCmp, char *fileName) {
     return false;
 }
 
+// returns number of lines in provided file
 int num_lines_in_file(char *fileName) {
     FILE *fp = fopen(fileName, "r");
     int c = 0;
@@ -104,11 +108,21 @@ struct Date {
     int year;
 };
 
+// returns true if the provided year is a leap year.
+// returns false otherwise.
 bool is_leap_year(int year) {
+    if(year < 0) {
+        return false;
+    }
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
 }
 
+// returns number of days in provided month on provided year
+// returns -1 if the month is not a valid month, or the year is not a valid year.
 int days_in_month(int month, int year) {
+    if(year < 0) {
+        return -1;
+    }
     if(month == 2 && is_leap_year(year)) {
         return 29;
     } else if(month == 2) {
@@ -122,6 +136,8 @@ int days_in_month(int month, int year) {
     }
 }
 
+// returns true if the date can represent a real calendar date
+// return false otherwise.
 bool is_valid_date(struct Date *date) {
     if(date->month > 12 || date->month < 1) {
         return false;
@@ -136,6 +152,9 @@ bool is_valid_date(struct Date *date) {
     return true;
 }
 
+// return 0 if the dates are exactly the same.
+// return -1 if the a comes earlier than b.
+// return 1 if a comes after b.
 int compare_dates(struct Date *a, struct Date *b) {
     if(a->day == b->day && a->month == b->month && a->year == b->year) {
         return 0;
@@ -146,6 +165,9 @@ int compare_dates(struct Date *a, struct Date *b) {
     }
 }
 
+// parses date from provided string.
+// if the provided string is a valid date
+// (that is, in the format mm/dd or mm/dd/yyyy and represents a possible calendar date)
 bool parse_date(char *str, struct Date *date) {
     int len = strlen(str);
     int firstSlash = -1;
@@ -160,7 +182,6 @@ bool parse_date(char *str, struct Date *date) {
     }
     
     if(firstSlash == -1) {
-        printf("A");
         return false;
     } else {
         char monthBuff[3];
@@ -168,7 +189,6 @@ bool parse_date(char *str, struct Date *date) {
         char yearBuff[5];
 
         if(firstSlash > 2) {
-            printf("B");
             return false;
         }
         memcpy(monthBuff, &str[0], firstSlash);
@@ -180,14 +200,12 @@ bool parse_date(char *str, struct Date *date) {
             }
             memcpy(dayBuff, &str[firstSlash + 1], secondSlash - firstSlash - 1);            
             if(len - secondSlash - 1 > 4) {
-                printf("D");
                 return false;
             }
             memcpy(yearBuff, &str[secondSlash + 1], len - secondSlash - 1);
             yearBuff[4] = '\0';
         } else {
             if(len - firstSlash - 1 > 2) {
-                printf("E");
                 return false;
             }
             memcpy(dayBuff, &str[firstSlash + 1], len - firstSlash - 1);
@@ -228,7 +246,6 @@ bool parse_date(char *str, struct Date *date) {
         date->year = possibleYear;
 
         if(!is_valid_date(date)) {
-            printf("F");
             return false;
         }
         return true;
@@ -341,7 +358,7 @@ int main(int argc, char *argv[]) {
                         str_date[index] = '\0';
                         struct Date lineDate;
                         if(strlen(str_date) != 0 && !parse_date(str_date, &lineDate)){
-                            printf("the provided file is in the wrong format!");
+                            printf("the provided file is in the wrong format!\n");
                             exit(1);
                         } else if (strlen(str_date) == 0 || days_till_date(&lineDate) > days_till_date(&date)) {
                             insert_task(numLines, argv[3], date_formatted, TODO_FILENAME);
@@ -390,6 +407,7 @@ int main(int argc, char *argv[]) {
         char **matchLines = malloc(num_lines_in_file(TODO_FILENAME) * sizeof(char*));
         while ((c = getc(fp)) != EOF) {
             if(c == '\t') {
+                line[size] = '\0';
                 if(match && size >= len) {
                     matchLineNum = lineNum;
                     if(size == len) { // exact match
