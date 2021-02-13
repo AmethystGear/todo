@@ -314,7 +314,7 @@ int main(int argc, char *argv[]) {
             printf("incorrect number of args\n");
             printf("remember, the format is {path to todo file} ");
             printf(ADD_COMMAND);
-            printf(" {task to add}, or {path to todo file}");
+            printf(" {task to add}, or {path to todo file} ");
             printf(ADD_COMMAND);
             printf(" {task to add} {date}\n");
             exit(1);
@@ -389,6 +389,7 @@ int main(int argc, char *argv[]) {
             printf("remember, the format is {path to todo file} ");
             printf(REMOVE_COMMAND);
             printf(" {task to remove}\n");
+            exit(1);
         }
 
         int len = strlen(argv[3]);
