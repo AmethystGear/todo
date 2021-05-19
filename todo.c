@@ -127,9 +127,9 @@ int days_in_month(int month, int year) {
         return 29;
     } else if(month == 2) {
         return 28;
-    } else if(month == 1 || month == 3 || month == 7 || month == 8 || month == 10 || month == 12) {
+    } else if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
         return 31;
-    } else if(month == 2 || month == 4 || month == 5 || month == 6 || month == 9 || month == 11) {
+    } else if(month == 4 || month == 6 || month == 9 || month == 11) {
         return 30;
     } else {
         return -1;
@@ -139,14 +139,13 @@ int days_in_month(int month, int year) {
 // returns true if the date can represent a real calendar date
 // return false otherwise.
 bool is_valid_date(struct Date *date) {
+    // month in valid range
     if(date->month > 12 || date->month < 1) {
         return false;
     }
-    if(date->year < 0) {
-        return false;
-    }
+    // day in valid range (also checks year since days_in_month returns -1 if an invalid year is given)
     int days = days_in_month(date->month, date->year);
-    if(date->day > days || date->day < 1) {
+    if(days == -1 || date->day > days || date->day < 1) {
         return false;
     }
     return true;
@@ -158,7 +157,11 @@ bool is_valid_date(struct Date *date) {
 int compare_dates(struct Date *a, struct Date *b) {
     if(a->day == b->day && a->month == b->month && a->year == b->year) {
         return 0;
-    } else if((a->year < b->year) || (a->year == b->year && a->month < b->month) || (a->year == b->year && a->month == b->month && a->day < b->day)) {
+    } else if(
+             (a->year < b->year) || 
+             (a->year == b->year && a->month < b->month) || 
+             (a->year == b->year && a->month == b->month && a->day < b->day)) 
+    {
         return -1;
     } else {
         return 1;
